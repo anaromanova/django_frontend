@@ -8,7 +8,7 @@
 
 Клонируйте репозиторий:
 ```
-git clone https://github.com/anaromanova/new_project_0.git
+git clone https://github.com/anaromanova/django_frontend.git
 ```
 
 ## Документация:
