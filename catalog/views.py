@@ -9,10 +9,6 @@ def home_data(request):
         return render(request, 'catalog/home.html')
 
 def contacts_data(request):
-    if request.method =='GET':
-        return render(request, 'catalog/contacts.html')
-
-def submit_data(request):
     if request.method == 'POST':
         name = request.POST.get("name")
         phone = request.POST.get("phone")
