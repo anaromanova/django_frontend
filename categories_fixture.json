@@ -1,0 +1,10 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "category_name": "Фрукты",
+        "description": "Сладкий продукт"
+    }
+}
+]
