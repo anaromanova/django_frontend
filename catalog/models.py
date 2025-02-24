@@ -1,5 +1,3 @@
-from tkinter.font import names
-
 from django.db import models
 
 
@@ -9,7 +7,7 @@ class Category(models.Model):
         verbose_name="Название категории",
         help_text="Введите название категории",
     )
-    description = models.CharField(
+    description = models.TextField(
         verbose_name="Описание категории",
         help_text="Введите описание категории",
         blank=True,
@@ -53,18 +51,16 @@ class Product(models.Model):
         null=True,
         related_name="products",
     )
-    price = models.FloatField(
+    price = models.DecimalField(
         blank=True, default=0.0, verbose_name="Цена", help_text="Введите цену продукта"
     )
-    created_at = models.DateField(
-        blank=True,
-        null=True,
+    created_at = models.DateTimeField(
+        auto_now_add=True,
         verbose_name="Дата создания",
         help_text="Введите дату создания",
     )
-    updated_at = models.DateField(
-        blank=True,
-        null=True,
+    updated_at = models.DateTimeField(
+        auto_now=True,
         verbose_name="Дата изменения",
         help_text="Введите дату изменения",
     )
