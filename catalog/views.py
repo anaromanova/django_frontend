@@ -5,8 +5,11 @@ from django.shortcuts import render
 
 
 def home_data(request):
-    if request.method == "GET":
-        return render(request, "catalog/home.html")
+    return render(request, "catalog/home.html")
+
+
+def product_details(request):
+    return render(request, "catalog/base.html")
 
 
 def contacts_data(request):

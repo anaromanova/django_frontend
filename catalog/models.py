@@ -52,7 +52,12 @@ class Product(models.Model):
         related_name="products",
     )
     price = models.DecimalField(
-        blank=True, default=0.0, verbose_name="Цена", help_text="Введите цену продукта"
+        blank=True,
+        default=0.0,
+        verbose_name="Цена",
+        help_text="Введите цену продукта",
+        decimal_places=2,
+        max_digits=100
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
