@@ -1,15 +1,19 @@
-from tkinter.font import names
-
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import Product
+from .forms import ProductForm
 
 
 def home_data(request):
-    return render(request, "catalog/home.html")
+    products = Product.objects.all()
+    context = {'products': products}
+    return render(request, "catalog/home.html", context)
 
 
-def product_details(request):
-    return render(request, "catalog/base.html")
+def product_details(request, product_id):
+    product = Product.objects.get(id=product_id)
+    context = {'product': product}
+    return render(request, "catalog/product_details.html", context)
 
 
 def contacts_data(request):
@@ -20,3 +24,15 @@ def contacts_data(request):
 
         return HttpResponse(f"Данные отправлены, {name}")
     return render(request, "catalog/contacts.html")
+
+
+def add_products(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('catalog:home_data')  # Перенаправление на список товаров
+    else:
+        form = ProductForm()
+
+    return render(request, 'catalog/add_products.html', {'form': form})
