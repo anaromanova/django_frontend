@@ -1,4 +1,32 @@
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
+
+class Contact(models.Model):
+    name = models.CharField(
+        max_length=50,
+        verbose_name="Имя и Фамилия",
+        help_text="Введите ваше имя и фамилию",
+    )
+    phone = PhoneNumberField(
+        verbose_name="Номер телефона",
+        help_text="Введите описание категории",
+        unique=True,
+    )
+    message = models.TextField(
+        verbose_name="Сообщение",
+        help_text="Введите ваше сообщение",
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = "Контакт"
+        verbose_name_plural = "Контакты"
+        ordering = ["phone", "name", "message"]
+
+    def __str__(self):
+        return self.phone
 
 
 class Category(models.Model):
@@ -60,14 +88,14 @@ class Product(models.Model):
         max_digits=100
     )
     created_at = models.DateTimeField(
-        auto_now_add=True,
         verbose_name="Дата создания",
         help_text="Введите дату создания",
+        default=timezone.now
     )
     updated_at = models.DateTimeField(
-        auto_now=True,
         verbose_name="Дата изменения",
         help_text="Введите дату изменения",
+        default = timezone.now
     )
 
     class Meta:

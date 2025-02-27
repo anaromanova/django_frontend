@@ -7,8 +7,8 @@ from . import views
 app_name = "catalog"
 
 urlpatterns = [
-    path('home_data/', views.home_data, name="home_data"),
-    path('contacts_data/', views.contacts_data, name="contacts_data"),
-    path('product_details/<int:product_id>/', views.product_details, name="product_details"),
-    path('add_products/', views.add_products, name="add_products"),
+    path('home_data/', views.ProductListView.as_view(), name="home_data"),
+    path('contacts_data/', views.ContactsView.as_view(), name="contacts"),
+    path('product_details/<int:pk>/', views.ProductDetailView.as_view(), name="product_details"),
+    path('add_products/', views.ProductCreateView.as_view(), name="add_products"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

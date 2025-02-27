@@ -1,38 +1,29 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from .models import Product
-from .forms import ProductForm
+from .models import Product, Contact
+from django.views.generic.edit import CreateView
+from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['product_name', 'price', 'description', 'category', 'image']
+    template_name = 'catalog/add_products.html'
+    success_url = reverse_lazy('catalog/home_data')
 
 
-def home_data(request):
-    products = Product.objects.all()
-    context = {'products': products}
-    return render(request, "catalog/home.html", context)
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/home_data.html'
+    context_object_name = 'products'
 
 
-def product_details(request, product_id):
-    product = Product.objects.get(id=product_id)
-    context = {'product': product}
-    return render(request, "catalog/product_details.html", context)
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_details.html'
+    context_object_name = 'product'
 
 
-def contacts_data(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        phone = request.POST.get("phone")
-        message = request.POST.get("message")
-
-        return HttpResponse(f"Данные отправлены, {name}")
-    return render(request, "catalog/contacts.html")
-
-
-def add_products(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog:home_data')  # Перенаправление на список товаров
-    else:
-        form = ProductForm()
-
-    return render(request, 'catalog/add_products.html', {'form': form})
+class ContactsView(CreateView):
+    model = Contact
+    fields = ['name', 'phone', 'message']
+    template_name = 'catalog/contacts.html'
+    success_url = reverse_lazy('catalog:home_data')
