@@ -1,11 +1,12 @@
-from .models import Product, Contact
+from .models import Product, Contact, Category
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import ProductForm
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.exceptions import PermissionDenied
+from django.core.cache import cache
+from catalog.services import get_products_by_category
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -29,6 +30,17 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_details.html'
     context_object_name = 'product'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        cache_key = f'product_detail_{pk}'
+        product = cache.get(cache_key)
+
+        if product is None:
+            product = super().get_object(queryset)
+            cache.set(cache_key, product, timeout=60 * 5)  # 5 минут
+
+        return product
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
@@ -60,6 +72,20 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
             raise PermissionDenied("Вы не можете удалить этот продукт.")
 
         return super().dispatch(request, *args, **kwargs)
+
+
+class ProductsByCategoryView(ListView):
+    template_name = 'catalog/products_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        category = self.kwargs.get('category')
+        return get_products_by_category(category)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.get(id=self.kwargs.get('category_id'))
+        return context
 
 
 class ContactsView(CreateView):

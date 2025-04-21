@@ -16,6 +16,7 @@ python-dotenv = "^1.0.1"
 psycopg2 = "^2.9.10"
 django-phonenumber-field = "^8.0.0"
 phonenumbers = "^8.13.55"
+redis = "^5.2.1"
 
 
 [build-system]
