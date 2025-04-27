@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.cache import cache
 from catalog.services import get_products_by_category
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -24,6 +28,10 @@ class ProductListView(ListView):
     model = Product
     template_name = 'catalog/home_data.html'
     context_object_name = 'products'
+
+    @method_decorator(cache_page(60 * 15))  # Кэширование страницы на 15 минут
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 
 class ProductDetailView(DetailView):
@@ -51,11 +59,6 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return Product.objects.filter(owner=self.request.user)
-
-
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth.decorators import permission_required
-from django.utils.decorators import method_decorator
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
