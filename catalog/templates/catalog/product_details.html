@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Детали продукта: {{ product.product_name }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <!-- Центрирование заголовка -->
+        <div class="text-center mb-4">
+            {% include 'catalog/header.html' %}
+        </div>
+
+        <!-- Выравнивание текста по левому краю -->
+        <div class="row justify-content-start">
+            <div class="col-md-6">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="img-fluid mb-3 rounded">
+                {% else %}
+                    <p><em>Изображение отсутствует</em></p>
+                {% endif %}
+                <p><strong>Название продукта:</strong> {{ product.product_name }}</p>
+                <p><strong>Цена:</strong> {{ product.price|default:"Неизвестно" }} руб.</p>
+                <p><strong>Описание:</strong> {{ product.description|default:"Неизвестно" }} </p>
+                <p><strong>Категория:</strong> {{ product.category|default:"Неизвестно" }} </p>
+                <p><strong>Дата создания:</strong> {{ product.created_at|default:"Неизвестно" }} </p>
+                <p><strong>Статус:</strong> {{ product.get_status_display }} </p>
+
+                <!-- Кнопка редактирования и удаления для владельца или модератора -->
+                {% if product.owner == request.user or request.user.has_perm('products.delete_product') %}
+                    <div class="mt-3">
+                        <!-- Кнопка редактирования -->
+                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">Редактировать</a>
+                        <!-- Кнопка удаления -->
+                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

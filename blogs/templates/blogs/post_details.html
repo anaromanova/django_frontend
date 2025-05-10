@@ -1,0 +1,27 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}Детали поста: {{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <!-- Центрирование заголовка -->
+        <div class="text-center mb-4">
+            {% include 'blogs/header.html' %}
+        </div>
+
+        <!-- Выравнивание текста по левому краю -->
+        <div class="row justify-content-start">
+            <div class="col-md-6">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid mb-3 rounded">
+                {% else %}
+                    <p><em>Изображение отсутствует</em></p>
+                {% endif %}
+                <p><strong>Название:</strong> {{ post.title }}</p>
+                <p><strong>Описание:</strong> {{ post.content|default:"Неизвестно" }} </p>
+                <p><strong>Кол-во просмотров:</strong> {{ post.views|default:"Неизвестно" }} </p>
+                <p><strong>Дата создания:</strong> {{ post.created_at|default:"Неизвестно" }} </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
